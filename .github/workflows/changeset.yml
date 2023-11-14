@@ -23,7 +23,7 @@ jobs:
         run: npm install
 
       - name: Create Changeset
-        run: npx changeset
+        run: npx changeset --base main
 
       - name: Commit Changeset
         run: |
