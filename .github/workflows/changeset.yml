@@ -1,11 +1,12 @@
-name: Generate Changelog
+name: 🦋 Generate Changeset
+
 on:
   pull_request:
     types:
       - opened
 
 jobs:
-  generate-changelog:
+  generate-changeset:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,19 +18,15 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '20'
 
       - name: Install dependencies
         run: npm install
 
-      - name: Fetch main branch
-        run: git fetch origin main:main
+      - name: Create Changeset
+        run: npx changeset --base HEAD
 
-      - name: Generate Changelog
+      - name: Commit Changeset
         run: |
-          git log --format='%s' main..HEAD > changelog.md
-
-      - name: Commit Changelog
-        run: |
-          git add changelog.md
-          git diff-index --quiet HEAD || git commit -m "chore: Update changelog" && git push origin ${{ github.event.pull_request.head.ref }}
+          git add .
+          git diff-index --quiet HEAD || git commit -m "chore: Create changeset file" && git push origin ${{ github.event.pull_request.head.ref }}
