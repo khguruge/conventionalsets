@@ -17,16 +17,19 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20'
+          node-version: '14'
 
       - name: Install dependencies
         run: npm install
 
+      - name: Fetch main branch
+        run: git fetch origin main:main
+
       - name: Generate Changelog
         run: |
-          git log --format='%s' origin/main..HEAD > changelog.md
+          git log --format='%s' main..HEAD > changelog.md
 
       - name: Commit Changelog
         run: |
-          git add changelog.txt
+          git add changelog.md
           git diff-index --quiet HEAD || git commit -m "chore: Update changelog" && git push origin ${{ github.event.pull_request.head.ref }}
