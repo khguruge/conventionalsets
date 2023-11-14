@@ -9,16 +9,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout pull request branch
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 20
+          node-version: '20'
 
       - name: Install dependencies
         run: npm install
 
       - name: Create Changeset
         run: npx changeset
+
+      - name: Commit Changeset
+        run: |
+          git add .
+          git diff-index --quiet HEAD || git commit -m "chore: Create changeset file" && git push origin ${{ github.event.pull_request.head.ref }}
